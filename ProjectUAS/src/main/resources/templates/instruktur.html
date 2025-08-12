@@ -1,0 +1,51 @@
+<html>
+    <head>
+        <title>Instruktur Page</title>
+        <link rel="stylesheet" type="text/css" th:href="@{/css/table.css}" />
+        <link rel="stylesheet" type="text/css" th:href="@{/css/home.css}" />
+        <link rel="stylesheet" type="text/css" th:href="@{/css/form.css}" />
+    </head>
+    <body>
+    <div class="first-box">
+        <h2>Semua Instruktur</h2>
+        <table class="styled-table">
+        <thead>
+            <tr><th>Id</th><th>Nama Instruktur</th></tr>
+        </thead>
+        <tbody th:each="m, no : ${insList}">
+            <tr><td th:text="${no.count}"></td>
+            <td ><a th:href="@{/instruktur/{id}(id=${m.getId()})}" th:text="${m.getName()}"></a></td>
+        </tbody>
+        </table>
+    </div>
+    <div class="second-box">
+        <div id="feedback-form">
+        <h2 class="header">Form Instruktur</h2>
+        <form th:action="@{/instruktur/submit/{id}(id=${insRec?.getId()})}" 
+          method="post" th:object="${insInfo}" class="form-group">
+
+          <!-- INPUT -->
+          <label for="id" class="form-label">ID</label>
+          <input
+            type="number"
+            id = "id"
+            name = "id"
+            th:value="${insRec != null} ? ${insRec.getId()}: '0'" readonly
+          />
+          <label for="name" class="form-label">Nama</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            th:value="${insRec?.getName()}" required
+          />
+        <!-- readonly tidak bisa diisi -->
+
+          <button type="submit" class="btn btn-primary" name="add">Add</button>
+          <button type="submit" class="btn btn-primary" name="edit">Edit</button>
+          <button type="submit" class="btn btn-primary" name="delete">Delete</button>
+        </form>
+        </div>
+    </div>
+    </body>
+</html>

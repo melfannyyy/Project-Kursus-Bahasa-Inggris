@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List Jadwal</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- <link rel="stylesheet" th:href="@{/css/style.css}"> -->
+</head>
+
+<body>    
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">All Jadwal</h2>
+        
+        <!-- Buttons Add and Return -->
+        <div class="d-flex justify-content-between mb-3">
+            <a th:href="@{/dashboard}" class="btn btn-secondary">Return</a>
+            <a th:href="@{/jadwal/new}" class="btn btn-success">Add Data</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead class="table-primary">
+                    <tr><th>No.</th><th>ID</th><th>Level</th><th>Hari</th><th>Waktu</th><th>Nama Instruktur</th><th>Action</th></tr>
+                </thead>
+                <tbody th:each="k, no : ${jadwalList}">
+                    <tr>
+                        <td th:text="${no.count}"></td>
+                        <td ><a th:href="@{/jadwal/{id}(id=${k.getId()})}" th:text="${k.getId()}"></a></td>
+                        <td th:text="${k.getGrade()}"></td>
+                        <td th:text="${k.getDay()}"></td>
+                        <td th:text="${k.getTime()}"></td>
+                        <td th:text="${k.getInstructor().getName()}"></td>
+                        <td>
+                            <form id="form-cancel" th:action="@{/jadwal/delete/{id}(id=${k.getId()})}" method="post" class="form-group">
+                                <button type="submit" class="btn btn-danger del-btn"  th:attr="data-jadwal-id=${k.getId()}">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script th:replace="~{layout :: foot_script}"></script>
+    <script>
+        // Attach event listener to all delete buttons
+document.addEventListener('DOMContentLoaded', () => {
+    const deleteButtons = document.querySelectorAll('.del-btn');
+    
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', event => {
+            // Get jadwal from the data attribute
+            const jadwal_id = button.getAttribute('data-jadwal-id');
+            
+            // Display confirmation dialog
+            const confirmation = confirm(`Apakah yakin menghapus data jadwal id:"${jadwal_id}"? (ini juga akan menghapus semua enrollment berkaitan)`);
+            
+            // If user clicks 'No', prevent the form from submitting
+            if (!confirmation) {
+                event.preventDefault();
+            }
+        });
+    });
+});
+
+    </script>
+</body>
+</html>

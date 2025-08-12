@@ -1,0 +1,74 @@
+<html>
+    <head>
+        <title>User Page</title>
+        <link rel="stylesheet" type="text/css" th:href="@{/css/table.css}" />
+        <link rel="stylesheet" type="text/css" th:href="@{/css/home.css}" />
+        <link rel="stylesheet" type="text/css" th:href="@{/css/form.css}" />
+    </head>
+    <body>
+    <!-- TABLE TAMPILAN -->
+    <div class="first-box">
+        <h2>All Users</h2>
+        <table class="styled-table">
+        <thead>
+            <tr><th>Id</th><th>UserName</th><th>email</th><th>password</th></tr>
+        </thead>
+        <tbody th:each="m, no : ${userList}">
+            <tr>
+              <!-- <td th:text="${no.count}"></td> -->
+               <td th:text="${m.getId}"></td>
+              <td ><a th:href="@{/user/{id}(id=${m.getId()})}" th:text="${m.getName()}"></a></td>
+              <td th:text="${m.getEmail()}"></td><td th:text="${m.getPassword()}"></td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
+
+    <!-- ADD, DELETE, EDIT -->
+    <div class="second-box">
+        <div id="feedback-form">
+        <h2 class="header">Form User</h2>
+        <form th:action="@{/user/submit/{id}(id=${userRec?.getId()})}" 
+          method="post" th:object="${userInfo}" class="form-group">
+          <!-- ID -->
+          <label for="id" class="form-label">ID</label>
+          <input
+            type="number"
+            id = "id"
+            name = "id"
+            th:value="${userRec != null} ? ${userRec.getId()}: '0'" readonly
+          />
+          <!-- EMAIL -->
+          <label for="email" class="form-label">Email</label>
+          <input
+            type="text"
+            id="email"
+            name="email"
+            th:value="${userRec?.getEmail()}" required
+          />
+          <!-- NAME -->
+          <label for="name" class="form-label">Name</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            th:value="${userRec?.getName()}" required
+          />
+          <!-- NAME -->
+          <label for="password" class="form-label">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            th:value="${userRec?.getPassword()}" required
+          />
+        
+          <!-- BUTTON -->
+          <button type="submit" class="btn btn-primary" name="add">Add</button>
+          <button type="submit" class="btn btn-primary" name="edit">Edit</button>
+          <button type="submit" class="btn btn-primary" name="delete">Delete</button>
+        </form>
+        </div>
+    </div>
+    </body>
+</html>

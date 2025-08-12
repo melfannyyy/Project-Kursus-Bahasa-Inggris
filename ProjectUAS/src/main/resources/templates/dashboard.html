@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <!-- Main Container -->
+    <div class="container my-5">
+      <h2 class="text-center mb-4">Menu Pilihan</h2>
+      <!-- Row for Menu Items -->
+      <div class="row">
+        <div th:if="${roles.contains('admin')}">sudah login</div>
+        <!-- Konten untuk pengguna yang belum login -->
+        <div th:if="${username.contains('anonymous')}">
+          <h2>Please Log In</h2>
+          <p>You need to log in to access your account.</p>
+          <a th:href="@{/login}">Login</a>
+        </div>
+        <!-- konten yang muncul saat login session -->
+        <div th:if="${!username.contains('anonymous')}">
+          <p>Selamat Datang, <strong><span th:text="${username}"></span></strong>
+          </p>
+          <!-- Konten untuk pengguna admin -->
+          <div th:if="${roles.contains('ROLE_ADMIN')}">
+            <!-- Menu 1 -->
+            <div class="col-lg-4 col-md-6 mb-4">
+              <div class="card h-100 shadow">
+                <div class="card-body">
+                  <h5 class="card-title">Admin Menu</h5>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                      <a th:href="@{/user}">Kelola User</a>
+                    </li>
+                    <li class="list-group-item">
+                      <a th:href="@{/instructor}">Kelola Instructor</a>
+                    </li>
+                    <li class="list-group-item">
+                      <a th:href="@{/jadwal}">Kelola Jadwal</a>
+                    </li>
+                    <li class="list-group-item">
+                      <a th:href="@{/enrollment}">Kelola Keikutsertaan (enrollmet)</a>
+                    </li>
+                    <li class="list-group-item">
+                      <a th:href="@{/logout}">Logout</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Konten untuk pengguna biasa -->
+          <div th:if="${roles.contains('ROLE_USER')}">
+            <h2>User Section</h2>
+            <div class="row">
+              <!-- Bagian Kiri: Card Submenu -->
+              <div class="col-lg-4">
+                <div class="card shadow">
+                  <div class="card-body">
+                    <h5 class="card-title">Menu</h5>
+                    <ul class="list-group list-group-flush">
+                      <li class="list-group-item">
+                        <a th:href="@{/user/{id}(id=${user.getId()})}" data-content="content1">Lihat Profile</a>
+                      </li>
+                      <li class="list-group-item">
+                        <a th:href="@{/course}" class="submenu-link" data-content="content2">Lihat Materi Kursus</a>
+                      </li>
+                      <li class="list-group-item">
+                        <a th:href="@{/updatepass}" class="submenu-link" data-content="content3">Ubah Password</a>
+                      </li>
+                      <li class="list-group-item">
+                        <a th:href="@{/logout}" class="submenu-link" data-content="content4">Logout</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <!-- Bagian Kanan: Konten -->
+              <div class="col-lg-8" th:if="${enrollment != null}">
+                <div id="content" class="content-item">
+                  <!-- <h3><span th:text="${enrollment.jadwal.day}"></h3> -->
+                  <div class="card shadow">
+                    <div class="card-body">
+                      <h4 class="card-title mb-4">Informasi Kursus yang diikuti</h4>
+                      <div class="row">
+                        <div class="col-md-2 fw-bold">Grade:</div>
+                        <div class="col-md-10">
+                          <span th:text="${enrollment.jadwal.grade}">
+                        </div>
+                      </div>
+                      <div class="row mt-2">
+                        <div class="col-md-2 fw-bold">Hari:</div>
+                        <div class="col-md-10">
+                          <span th:text="${enrollment.jadwal.day}">
+                        </div>
+                      </div>
+                      <div class="row mt-2">
+                        <div class="col-md-2 fw-bold">Waktu:</div>
+                        <div class="col-md-10">
+                          <span th:text="${enrollment.jadwal.time}">
+                        </div>
+                      </div>
+                      <div class="row mt-2">
+                        <div class="col-md-2 fw-bold">Instruktur:</div>
+                        <div class="col-md-10">
+                          <span th:text="${enrollment.jadwal.instructor.name}">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-footer">
+                      <div class="row">
+                        <form id="form-cancel" th:action="@{/enrollment/cancel}" th:object="${user}" method="post" class="form-group">
+                          <div class="btn-group" role="group" aria-label="Action Buttons"></div>
+                          <a th:href="@{/test}" class="btn btn-primary">Ulangi Assessment Tes</a>
+                          <a th:href="@{/selectjadwal}" class="btn btn-secondary">Ubah Jadwal</a>
+                          <input type="hidden" name="user_id" th:value="${user.id}">
+                          <button type="submit" class="btn btn-danger">Berhenti Kursus</button>
+                      </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-8" th:if="${enrollment == null}">
+                <div id="content" class="content-item" th:if="${lastenrollment == null}">
+                  <div class="card shadow">
+                    <div class="card-body">
+                      <div class="row">
+                        <div>
+                          <h4 class="card-title mb-4">Anda belum memiliki jadwal kursus</h4>
+                        </div>
+                        <div class="btn-group" role="group" aria-label="Action Buttons">
+                          <a th:href="@{/test}" class="btn btn-primary">Mulai Sekarang</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div id="content" class="content-item" th:if="${lastenrollment != null}">
+                  <div class="card shadow">
+                    <div class="card-body">
+                      <div class="row">
+                        <div>
+                          <h4 class="card-title mb-4">Anda belum memilih jadwal kursus</h4>
+                        </div>
+                        <div class="btn-group" role="group" aria-label="Action Buttons">
+                          <a th:href="@{/selectjadwal}" class="btn btn-primary">Pilih Jadwal</a>
+                          <a th:href="@{/test}" class="btn btn-secondary">Ambil Ulang Test</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+        <div>
+          <!-- <a th:href="@{/logout}">Logout</a> -->
+        </div>
+      </div>
+    </div>
+    </div>
+    <script th:replace="~{layout :: foot_script}"></script>
+    <!-- JavaScript for Confirmation -->
+    <script>
+      document.getElementById("form-cancel").addEventListener("submit", function(event) {
+        // Tampilkan dialog konfirmasi
+        const isConfirmed = confirm("Apakah Anda yakin ingin berhenti kursus?");
+        if (!isConfirmed) {
+          // Jika pengguna memilih "No", batalkan pengiriman form
+          event.preventDefault();
+        }
+      });
+    </script>
+  </body>
+</html>

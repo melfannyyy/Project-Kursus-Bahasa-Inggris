@@ -1,0 +1,88 @@
+<html>
+    <head>
+        <title>Jadwal Page</title>
+        <link rel="stylesheet" type="text/css" th:href="@{/css/table.css}" />
+        <link rel="stylesheet" type="text/css" th:href="@{/css/home.css}" />
+        <link rel="stylesheet" type="text/css" th:href="@{/css/form.css}" />
+    </head>
+    <body>
+    <div class="first-box">
+        <h2>Semua Jadwal </h2>
+        
+        <table class="styled-table">
+        <thead>
+            <tr><th>Id</th><th>Grade</th><th>Tanggal Waktu</th><th>Member Nama</th><th>Instruktur Nama</th></tr>
+        </thead>
+        <tbody th:each="j, no : ${jadList}">
+            <tr>
+                <td th:text="${no.count}"></td>
+                <td ><a th:href="@{/jadwal/{id}(id=${j.getId()})}" th:text="${j.getGrade()}"></a></td>
+                <!-- <td th:text="${j.getFormattedDate()}"></td> -->
+                <td th:text="${j.getMember().getName}"></td>
+                <td th:text="${j.getInstruktur().getName}"></td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
+    
+   
+    <div class="second-box">
+        <div id="feedback-form">
+        <h2 class="header">Form Jadwal</h2>
+        <h2 th:text="${jadRec != null} ? ${jadRec.getId()}"></h2>
+        
+        <form th:action="@{/jadwal/submit/{id}(id=${jadRec?.getId()})}" 
+          method="post" th:object="${jadInfo}" class="form-group">
+
+          <!-- INPUT -->
+          <label for="id" class="form-label">ID</label>
+          <input
+            type="number"
+            id = "id"
+            name = "id"
+            th:value="${jadRec != null} ? ${jadRec.getId()}: '0'" readonly
+          />
+          <label for="grade" class="form-label">Grade</label>
+          <input
+            type="text"
+            id="grade"
+            name="grade"
+            th:value="${jadRec?.getGrade()}" required
+          />
+        <!-- readonly tidak bisa diisi -->
+        <!-- required harus diisi -->
+          <!-- <label for="tanggal_waktu" class="form-label">Tanggal Waktu</label>
+          <input
+          type="text"
+          id="tanggal_waktu"
+          name="tanggal_waktu"
+          th:value="${jadRec?.tanggal_waktu}" required
+          /> -->
+          
+          <label for="member">Pilih Member:</label>
+          <select th:field="*{member}">
+              <option value="" disabled selected>Pilih Member</option>
+              <option   th:each="m : ${members}" 
+                        th:value="${m}" 
+                        th:text="${m.name}"
+                        ></option>
+          </select>
+          <br>
+
+          <label for="instruktur">Pilih Instruktur:</label>
+          <select th:field="*{instruktur}">
+              <option value="" disabled selected>Pilih Member</option>
+              <option   th:each="i : ${instrukturs}" 
+                        th:value="${i.id}" 
+                        th:text="${i.name}"></option>
+          </select>
+          <br>
+
+          <button type="submit" class="btn btn-primary" name="add">Add</button>
+          <button type="submit" class="btn btn-primary" name="edit">Edit</button>
+          <button type="submit" class="btn btn-primary" name="delete">Delete</button>
+        </form>
+        </div>
+    </div>
+    </body>
+</html>

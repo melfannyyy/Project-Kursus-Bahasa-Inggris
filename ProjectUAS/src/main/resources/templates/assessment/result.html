@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- <link rel="stylesheet" th:href="@{/css/style.css}"> -->
+</head>
+
+<body>   
+     <!-- Hasil Tes Section -->
+  <div class="container my-5">
+    <h1 class="text-center">Hasil Tes Bahasa Inggris Anda</h1>
+    <p class="text-center">Berikut adalah hasil tes Bahasa Inggris yang telah Anda selesaikan:</p>
+
+    <!-- Skor Hasil Tes -->
+    <div class="card my-4 shadow">
+      <div class="card-body text-center">
+        <h2 class="display-4">Skor Anda: <span th:text="${score}"></span>/100</h2>
+        <p class="lead">Grade: <span th:text="${grade}"></span></p>
+        <p>Berdasarkan skor Anda, kami merekomendasikan grade kursus <strong><span th:text=${grade}></span></strong> untuk melanjutkan pengembangan keterampilan Bahasa Inggris Anda.</p>
+      </div>
+    </div>
+
+    <!-- Pilihan Jadwal Kursus -->
+    <h3 class="text-center mt-5">Pilih Jadwal Kursus</h3>
+    <p class="text-center">Silakan pilih jadwal yang sesuai untuk memulai kursus Bahasa Inggris Anda:</p>
+
+    <div class="row" >
+      <div class="col-md-4 mb-4" th:each="jadwal : ${jadwals}">
+        <div class="card h-100 shadow">
+          <div class="card-body text-center">
+            <form th:action="@{/enrollment/save}" th:object="${enrollmentInfo}" method="post" class="form-group">
+              <input type="hidden" name ="jadwal_id" th:value="${jadwal.id}">
+              <input type="hidden" name ="user_id" th:value="${user.id}">
+              <h5 class="card-title" th:text="${jadwal.day}"></h5>
+              <p class="card-text"  th:text="${jadwal.time}"></p>
+              <button type="submit" class="btn btn-primary">Pilih Jadwal</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      
+
+    </div>
+  </div>
+
+    <script th:replace="~{layout :: foot_script}"></script>
+</body>
+</html>
